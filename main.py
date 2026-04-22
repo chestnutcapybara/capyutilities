@@ -44,8 +44,6 @@ class MainWindow(QMainWindow):
         self.search_bar.setMinimumHeight(40)
         main_layout.addWidget(self.search_bar)
 
-        # Quick Access Section
-        main_layout.addWidget(QLabel('Quick Access:'))
         
         button_layout = QHBoxLayout()
         self.btn_action = QPushButton('Run Utility')
