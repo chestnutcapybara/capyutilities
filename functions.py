@@ -22,7 +22,7 @@ def load_custom_font(font_filename: str) -> str:
     if font_id == -1:
         raise RuntimeError(f"Could not load font: {font_filename}")
         
-    #Extract the family name (e.g., "DM Sans")
+    # Extract the family name from the loaded font
     families = QFontDatabase.applicationFontFamilies(font_id)
     if not families:
         raise RuntimeError(f"No font families found in: {font_filename}")
