@@ -38,8 +38,32 @@ a = Analysis(
     'PySide6.QtMultimediaWidgets',
     ],
     noarchive=False,
-    optimize=0,
+    optimize=2,
 )
+useful_binaries = []
+for (dest, source, kind) in a.binaries:
+    # Drop translations 
+    if 'translations' in dest.lower():
+        continue
+    # Drop large DLLs
+    if 'Qt6Network' in dest or 'Qt6Sql' in dest or 'Qt6Xml' in dest:
+        continue
+    if 'libEGL' in dest or 'libGLESv2' in dest or 'opengl32sw' in dest:
+        continue
+    useful_binaries.append((dest, source, kind))
+
+a.binaries = useful_binaries
+
+files_to_remove = [
+    'Qt6Network',      # Networking (Huge)
+    'Qt6Pdf',          # PDF rendering
+    'Qt6Svg',          # SVG support
+    'opengl32sw.dll',  # Software OpenGL renderer (approx. 10MB!)
+    'D3DCompiler_47',  # DirectX compiler (approx. 4MB)
+    'translations',    # All non-English language files
+]
+
+a.binaries = [x for x in a.binaries if not any(bad in x[0] for bad in files_to_remove)]
 pyz = PYZ(a.pure)
 
 exe = EXE(
