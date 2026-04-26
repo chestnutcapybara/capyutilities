@@ -50,6 +50,8 @@ for (dest, source, kind) in a.binaries:
         continue
     if 'libEGL' in dest or 'libGLESv2' in dest or 'opengl32sw' in dest:
         continue
+    if 'platforms' in dest and 'qwindows' not in dest:
+        continue
     useful_binaries.append((dest, source, kind))
 
 a.binaries = useful_binaries
