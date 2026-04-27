@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
 
     def open_plugin(self, plugin):
         widget_class = plugin["widget"]
-        widget = widget_class()
+        widget = widget_class(go_home_callback=self.go_home)
 
         self.stack.addWidget(widget)
         self.stack.setCurrentWidget(widget)
@@ -76,6 +76,9 @@ class MainWindow(QMainWindow):
         layout.addStretch()
 
         return widget
+    
+    def go_home(self):
+        self.stack.setCurrentWidget(self.start_page)
 
     def on_run_click(self):
         query = self.search_bar.text().lower()
