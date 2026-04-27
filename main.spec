@@ -1,4 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
+# 32,297 KB
 
 
 a = Analysis(

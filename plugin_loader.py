@@ -20,7 +20,7 @@ def load_plugins():
             try:
                 # Force a reload or ensure it's in sys.modules
                 module = importlib.import_module(module_name)
-                
+                importlib.reload(module)  
                 # If you make changes to plugins while developing, 
                 # you might want importlib.reload(module) here.
 
