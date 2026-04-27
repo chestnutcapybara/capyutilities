@@ -59,6 +59,7 @@ class MainWindow(QMainWindow):
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText('Search tools...')
         self.search_bar.setMinimumHeight(40)
+        self.search_bar.returnPressed.connect(self.on_run_click)
         layout.addWidget(self.search_bar)
 
         button_layout = QHBoxLayout()
