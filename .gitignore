@@ -2,5 +2,7 @@
 *.pyc
 build
 dist
+main.build/
+main.dist/
 __pycache__/
 *.egg-info

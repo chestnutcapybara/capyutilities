@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout, QHBoxLayout, QLabel, 
                              QPushButton, QLineEdit, QStackedWidget)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QIcon
 
 # System imports
 import sys
@@ -23,7 +23,8 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle('Bingy Utilities')
+        self.setWindowTitle('CapyUtilities')
+        self.setWindowIcon(QIcon(str(functions.resolve_path("icon.ico"))))
         self.setMinimumSize(400, 300)
 
         self.stack = QStackedWidget()
@@ -51,7 +52,7 @@ class MainWindow(QMainWindow):
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
 
-        title_label = QLabel('Bingy Utilities')
+        title_label = QLabel('CapyUtilities')
         title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_label)
