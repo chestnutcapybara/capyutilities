@@ -195,60 +195,12 @@ jobs:
           name: macos-arm64-build
           path: macos-arm64.zip
 
-
-  build-ubuntu-arm64:
-    runs-on: [self-hosted, chestnutcapybara-ubuntu-arm64]
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install nuitka
-
-      - name: Build Linux ARM64
-        run: |
-          python -m nuitka \
-            --standalone \
-            --jobs=4 \
-            --show-progress \
-            --plugin-enable=pyside6 \
-            --include-qt-plugins=platforms \
-            --noinclude-qt-translations \
-            --remove-output \
-            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf \
-            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf \
-            --include-raw-dir=widgets=widgets \
-            --output-dir=dist/linux-arm64 \
-            --assume-yes-for-downloads \
-            main.py
-
-      - name: Zip Linux ARM64 Build
-        run: |
-          zip -r ubuntu-arm64.zip dist/linux-arm64
-
-      - name: Upload Linux ARM64 Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: ubuntu-arm64-build
-          path: ubuntu-arm64.zip
-
-
   create-release:
     needs:
       - build-windows-x64
       - build-ubuntu-x64
       - build-macos-x64
       - build-macos-arm64
-      - build-ubuntu-arm64
 
     runs-on: ubuntu-latest
 
