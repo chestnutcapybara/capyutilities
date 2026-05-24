@@ -26,6 +26,8 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         logger.info("Initializing UI")
         self.setWindowTitle('CapyUtilities')
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        self.show()
         self.setWindowIcon(QIcon(str(functions.resolve_path("icon.ico"))))
         self.setMinimumSize(400, 300)
 

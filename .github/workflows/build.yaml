@@ -1,0 +1,244 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+
+jobs:
+  build-windows-x64:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Build Windows x64
+        run: |
+          python -m nuitka ^
+            --standalone ^
+            --jobs=4 ^
+            --show-progress ^
+            --plugin-enable=pyside6 ^
+            --include-qt-plugins=platforms ^
+            --windows-icon-from-ico=icon.ico ^
+            --noinclude-qt-translations ^
+            --remove-output ^
+            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf ^
+            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf ^
+            --include-raw-dir=widgets=widgets ^
+            --include-data-files=icon.ico=icon.ico ^
+            --output-dir=dist/windows-x64 ^
+            main.py
+
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64-build
+          path: dist/windows-x64/**/*.exe
+
+
+  build-ubuntu-x64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Build Ubuntu x64
+        run: |
+          python -m nuitka \
+            --standalone \
+            --jobs=4 \
+            --show-progress \
+            --plugin-enable=pyside6 \
+            --include-qt-plugins=platforms \
+            --noinclude-qt-translations \
+            --remove-output \
+            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf \
+            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf \
+            --include-raw-dir=widgets=widgets \
+            --output-dir=dist/linux-x64 \
+            main.py
+
+      - name: Upload Linux Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-x64-build
+          path: dist/linux-x64/**/*
+
+
+  build-macos-x64:
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Build macOS x64
+        run: |
+          python -m nuitka \
+            --standalone \
+            --jobs=4 \
+            --show-progress \
+            --plugin-enable=pyside6 \
+            --include-qt-plugins=platforms \
+            --noinclude-qt-translations \
+            --remove-output \
+            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf \
+            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf \
+            --include-raw-dir=widgets=widgets \
+            --output-dir=dist/macos-x64 \
+            main.py
+
+      - name: Upload macOS x64 Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-x64-build
+          path: dist/macos-x64/**/*
+
+
+  build-macos-arm64:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Build macOS ARM64
+        run: |
+          python -m nuitka \
+            --standalone \
+            --jobs=4 \
+            --show-progress \
+            --plugin-enable=pyside6 \
+            --include-qt-plugins=platforms \
+            --noinclude-qt-translations \
+            --remove-output \
+            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf \
+            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf \
+            --include-raw-dir=widgets=widgets \
+            --output-dir=dist/macos-arm64 \
+            main.py
+
+      - name: Upload macOS ARM64 Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64-build
+          path: dist/macos-arm64/**/*
+
+
+  build-ubuntu-arm64:
+    runs-on: [self-hosted, chestnutcapybara-ubuntu-arm64]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka
+
+      - name: Build Linux ARM64
+        run: |
+          python -m nuitka \
+            --standalone \
+            --jobs=4 \
+            --show-progress \
+            --plugin-enable=pyside6 \
+            --include-qt-plugins=platforms \
+            --noinclude-qt-translations \
+            --remove-output \
+            --include-data-files=DMSans-Regular.ttf=DMSans-Regular.ttf \
+            --include-data-files=DMSans-Bold.ttf=DMSans-Bold.ttf \
+            --include-raw-dir=widgets=widgets \
+            --output-dir=dist/linux-arm64 \
+            main.py
+
+      - name: Upload Linux ARM64 Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-arm64-build
+          path: dist/linux-arm64/**/*
+
+
+  create-release:
+    needs:
+      - build-windows-x64
+      - build-ubuntu-x64
+      - build-macos-x64
+      - build-macos-arm64
+      - build-ubuntu-arm64
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-files
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+          files: release-files/**/*
