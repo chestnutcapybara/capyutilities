@@ -31,9 +31,18 @@ class WordCountWidget(QWidget):
         self.count_char = QPushButton("Count Characters")
         self.count_char.clicked.connect(self.return_char_count)
 
+        self.count_char_nospaces = QPushButton("Count Characters (no spaces)")
+        self.count_char_nospaces.clicked.connect(self.return_char_count_nospaces)
+
+        self.word_count = QPushButton("Word Count")
+        self.word_count.clicked.connect(self.return_word_count)
+
         layout.addWidget(self.input_text)
         layout.addWidget(self.count_char)
+        layout.addWidget(self.count_char_nospaces)
+        layout.addWidget(self.word_count)
         layout.addWidget(self.output_label)
+        
 
         layout.addStretch(1)
         self.setLayout(layout)
@@ -49,6 +58,17 @@ class WordCountWidget(QWidget):
         text = self.get_text()
         char_count = len(text)
         self.output_label.setText(f"Character Count: {char_count}")
+
+    def return_char_count_nospaces(self):
+        text = self.get_text()
+        char_count = len(text.replace(" ", ""))
+        self.output_label.setText(f"Character Count (no spaces): {char_count}")
+
+    def return_word_count(self):
+        text = self.get_text()
+        word_count = len(text.split())
+        self.output_label.setText(f"Word Count: {word_count}")
+
     
     
 
