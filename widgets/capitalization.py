@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QPushButton, QTextEdit, QSizePolicy
+    QWidget, QVBoxLayout, QLabel, QPushButton, QTextEdit, QHBoxLayout
 )
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QGuiApplication  # Added for clipboard stufffs
 
 class CapitalizationWidget(QWidget):
     def __init__(self, go_home_callback=None):
@@ -27,12 +28,16 @@ class CapitalizationWidget(QWidget):
         self.input_text.setPlaceholderText("Enter text here...")
         self.input_text.setFixedHeight(30)
 
-        self.input_text.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        #self.input_text.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         # Output label
         self.output_label = QLabel("Formatted text will appear here")
         self.output_label.setWordWrap(True)
 
+        self.copy = QPushButton("Copy")
+        self.copy.setFixedWidth(60)
+        self.copy.clicked.connect(self.copy_output)
+        
         # Buttons
         btn_upper = QPushButton("Uppercase (EXAMPLE)")
         btn_title = QPushButton("Title Case (Example)")
@@ -48,7 +53,12 @@ class CapitalizationWidget(QWidget):
         layout.addWidget(btn_upper)
         layout.addWidget(btn_title)
         layout.addWidget(btn_lower)
-        layout.addWidget(self.output_label)
+        output_layout = QHBoxLayout()
+
+        output_layout.addWidget(self.output_label, 1)  # Stretch factor
+        output_layout.addWidget(self.copy)
+
+        layout.addLayout(output_layout)
 
         layout.addStretch(1)
         self.setLayout(layout)
@@ -68,6 +78,12 @@ class CapitalizationWidget(QWidget):
 
     def to_lower(self):
         self.output_label.setText(self.get_text().lower())
+
+    def copy_output(self):
+        text = self.output_label.text()
+        if text and text != "Formatted text will appear here":
+            clipboard = QGuiApplication.clipboard()
+            clipboard.setText(text)
 
 
 # Plugin data
