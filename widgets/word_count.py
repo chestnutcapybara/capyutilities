@@ -22,13 +22,18 @@ class WordCountWidget(QWidget):
         back_button.clicked.connect(self.go_home)
         layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
-        self.input_text = QLineEdit()
-        self.input_text.setPlaceholderText("Enter text here")
         self.output_label = QLabel("Number of characters will appear here")
         self.output_label.setWordWrap(True)
-        layout.addWidget(self.output_label)
+
+        self.input_text = QLineEdit()
+        self.input_text.setPlaceholderText("Enter text here")
+
+        self.count_char = QPushButton("Count Characters")
+        self.count_char.clicked.connect(self.return_char_count)
 
         layout.addWidget(self.input_text)
+        layout.addWidget(self.count_char)
+        layout.addWidget(self.output_label)
 
         layout.addStretch(1)
         self.setLayout(layout)
