@@ -43,7 +43,6 @@ class WordCountWidget(QWidget):
         layout.addWidget(self.word_count)
         layout.addWidget(self.output_label)
         
-
         layout.addStretch(1)
         self.setLayout(layout)
     
@@ -69,10 +68,6 @@ class WordCountWidget(QWidget):
         word_count = len(text.split())
         self.output_label.setText(f"Word Count: {word_count}")
 
-    
-    
-
-    
 # Plugin data
 PLUGIN = {
     "name": "Word Count Tool",

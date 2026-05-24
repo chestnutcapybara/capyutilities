@@ -39,7 +39,7 @@ class Template(QWidget):
     
 # Plugin data
 PLUGIN = {
-    "name": "TEMPLATE",
-    "keywords": ["lmao"],
+    "name": "_Template",
+    "keywords": ["template"],
     "widget": Template
 }

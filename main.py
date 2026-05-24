@@ -15,6 +15,7 @@ from typing import NoReturn
 # Local imports
 import functions
 import plugin_loader
+from logger import logger
 
 ### Main Window Class ###
 class MainWindow(QMainWindow):
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
+        logger.info("Initializing UI")
         self.setWindowTitle('CapyUtilities')
         self.setWindowIcon(QIcon(str(functions.resolve_path("icon.ico"))))
         self.setMinimumSize(400, 300)
@@ -34,8 +36,9 @@ class MainWindow(QMainWindow):
         self.start_page = self.build_start_page()
         self.stack.addWidget(self.start_page)
 
+        logger.info("Loading all plugins...")
         self.plugins = plugin_loader.load_plugins()
-        print(f"Loaded plugins: {[p['name'] for p in self.plugins]}") # Debug info
+        logger.info(f"Loaded all plugins. Plugin names: {[p['name'] for p in self.plugins]}")
 
     def open_plugin(self, plugin):
         widget_class = plugin["widget"]
@@ -43,9 +46,11 @@ class MainWindow(QMainWindow):
 
         self.stack.addWidget(widget)
         self.stack.setCurrentWidget(widget)
+        logger.info(f"Opened plugin: {plugin['name']}") # Debug info
 
 
     def build_start_page(self):
+        logger.info("Creating start page UI...")
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
@@ -76,40 +81,49 @@ class MainWindow(QMainWindow):
 
         layout.addStretch()
 
+        logger.info("Start page UI created successfully")
         return widget
-    
     def go_home(self):
         self.stack.setCurrentWidget(self.start_page)
 
     def on_run_click(self):
+        logger.info("User used search bar. Attempting to find plugin...")
         query = self.search_bar.text().lower()
 
         for plugin in self.plugins:
             if query in plugin["name"].lower() or any(query in k for k in plugin["keywords"]):
+                logger.info(f"Plugin matched for query '{query}': {plugin['name']}. Starting plugin...") # Debug info
                 self.open_plugin(plugin)
                 return
 
-        print("No matching utility found")
+        logger.info(f"No matching utility found for query '{query}'")
 
 def main() -> NoReturn:
+    logger.info("Application started runnning...")
     app = QApplication(sys.argv)
+    logger.info("QApplication created")
 
     ## Load Font ##
     try:
-        # Load both there's also bold
+        logger.info("Loading custom fonts...")
+        # Load both regular and bold
         font_family = functions.load_custom_font("DMSans-Regular.ttf")
         functions.load_custom_font("DMSans-Bold.ttf")
 
         # Set the global font for the whole app
         app.setFont(QFont(font_family, 11))
+        logger.info("Fonts loaded successfully")
         
     except RuntimeError as e:
-        print(f"Font Error: {e}")
+        logger.error(f"Font loading failed: {e}")
 
-
+    logger.info("Starting main window...")
     window = MainWindow()
+    logger.info("Main window created successfully.")
     window.show()
+    logger.debug("Main window shown. Entering application event loop.")
     sys.exit(app.exec())
 
 if __name__ == '__main__':
+    logger.info("Starting application...")
     main()
