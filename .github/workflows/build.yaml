@@ -201,28 +201,43 @@ jobs:
       - build-ubuntu-x64
       - build-macos-x64
       - build-macos-arm64
-
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
+      # 1. Explicitly download each artifact by name into a 'binaries' folder
+      - name: Download Windows Build
         uses: actions/download-artifact@v4
         with:
-          path: release-files
+          name: windows-x64-build
+          path: binaries
 
+      - name: Download Ubuntu Build
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-x64-build
+          path: binaries
+
+      - name: Download macOS x64 Build
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-x64-build
+          path: binaries
+
+      - name: Download macOS ARM64 Build
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-arm64-build
+          path: binaries
+
+      # 2. Create the Release and attach the binaries
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: release_notes.md
+          generate_release_notes: true
+          fail_on_unmatched_files: true # <--- CRITICAL: Forces a hard failure if any file is missing
           files: |
-            windows-x64.zip
-            ubuntu-x64.zip
-            macos-x64.zip
-            macos-arm64.zip
-            ubuntu-arm64.zip
+            binaries/windows-x64.zip
+            binaries/ubuntu-x64.zip
+            binaries/macos-x64.zip
+            binaries/macos-arm64.zip

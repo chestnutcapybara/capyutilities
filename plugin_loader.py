@@ -1,7 +1,5 @@
 import os
 import importlib
-import sys
-
 def load_plugins():
     plugins = []
     
