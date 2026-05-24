@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
+    QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QTextBrowser
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication  # Added for clipboard
