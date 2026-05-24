@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton
+    QWidget, QVBoxLayout, QPushButton, QLineEdit, QLabel
 )
 from PySide6.QtCore import Qt
 
@@ -22,8 +22,13 @@ class WordCountWidget(QWidget):
         back_button.clicked.connect(self.go_home)
         layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
+        self.input_text = QLineEdit()
+        self.input_text.setPlaceholderText("Enter text here")
+        self.output_label = QLabel("Number of characters will appear here")
+        self.output_label.setWordWrap(True)
+        layout.addWidget(self.output_label)
 
-        #layout.addWidget()
+        layout.addWidget(self.input_text)
 
         layout.addStretch(1)
         self.setLayout(layout)
@@ -32,8 +37,14 @@ class WordCountWidget(QWidget):
         if self.go_home_callback:
             self.go_home_callback()
 
-    #def get_text(self):
-            #return self.input_text.toPlainText()
+    def get_text(self):
+        return self.input_text.text()
+    
+    def return_char_count(self):
+        text = self.get_text()
+        char_count = len(text)
+        self.output_label.setText(f"Character Count: {char_count}")
+    
     
 
     
