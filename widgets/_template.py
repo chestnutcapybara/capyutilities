@@ -4,9 +4,10 @@
 ### Make sure to change the PLUGIN Data at the very bottom of the file  for your new widget
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton
+    QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
 )
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QGuiApplication  # Added for clipboard
 
 class Template(QWidget):
     def __init__(self, go_home_callback=None):
@@ -27,7 +28,18 @@ class Template(QWidget):
         back_button.clicked.connect(self.go_home)
         layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
-        #layout.addWidget()
+        self.output_label = QLabel("This is a template")
+        self.output_label.setWordWrap(True)
+        self.copy_output_btn = QPushButton("Copy")
+        self.copy_output_btn.setFixedWidth(60)
+        self.copy_output_btn.clicked.connect(self.copy_output)
+        output_layout = QHBoxLayout()
+
+        output_layout.addWidget(self.output_label, 1)  # Stretch factor
+        output_layout.addWidget(self.copy_output_btn)
+
+        layout.addLayout(output_layout)
+        
 
         layout.addStretch(1)
         self.setLayout(layout)
@@ -35,6 +47,12 @@ class Template(QWidget):
     def go_home(self):
         if self.go_home_callback:
             self.go_home_callback()
+    
+    def copy_output(self):
+        text = self.output_label.text()
+        if text and text != "Formatted text will appear here":
+            clipboard = QGuiApplication.clipboard()
+            clipboard.setText(text)
 
     
 # Plugin data
