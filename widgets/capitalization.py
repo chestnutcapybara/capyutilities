@@ -1,7 +1,6 @@
 '''
 ## CapyUtilities: CapitalizationWidget
-Description: A simple widget for changing the capitalization of text. It has 3 options, 
-    Uppercase, Lowercase, and Title Case.
+Description: A simple widget for changing the capitalization of text. It has 3 options, Uppercase, Lowercase, and Title Case.
 Status: Stable
 '''
 from PySide6.QtWidgets import (

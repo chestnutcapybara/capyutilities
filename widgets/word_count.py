@@ -1,3 +1,8 @@
+'''
+## CapyUtilities: WordCountWidget
+Description: A simple widget for counting words and characters. It can count words, characters, and characters no spaces.
+Status: Stable
+'''
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QLineEdit, QLabel
 )
