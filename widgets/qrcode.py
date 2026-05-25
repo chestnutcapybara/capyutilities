@@ -7,7 +7,7 @@ Status: Stable
 from io import BytesIO
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QLabel, QTextEdit
+    QWidget, QVBoxLayout, QPushButton, QLabel, QTextEdit, QFileDialog
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication, QPixmap
@@ -19,7 +19,9 @@ class QrCodeWidget(QWidget):
     def __init__(self, go_home_callback=None):
         super().__init__()
 
-        self.setWindowTitle("CapyUtilities: QrCodeWidget")
+        window = self.window()
+        if window is not None:
+            window.setWindowTitle("CapyUtilities: QR Code Generator")
 
         self.go_home_callback = go_home_callback
         self.current_pixmap = None
@@ -41,7 +43,7 @@ class QrCodeWidget(QWidget):
         # Input box
         self.link_query = QTextEdit()
         self.link_query.setPlaceholderText("Enter the link...")
-        self.link_query.setFixedHeight(80)
+        self.link_query.setFixedHeight(35)
 
         # Generate button
         self.link_btn = QPushButton("Generate QR Code")
@@ -59,10 +61,17 @@ class QrCodeWidget(QWidget):
         self.copy_output_btn.setFixedWidth(100)
         self.copy_output_btn.clicked.connect(self.copy_output)
 
+        # save as btn
+        self.save_btn = QPushButton("Save QR")
+        self.save_btn.setFixedWidth(100)
+        self.save_btn.clicked.connect(self.save_qr)
+
         layout.addWidget(self.link_query)
         layout.addWidget(self.link_btn)
+        layout.addSpacing(100)
         layout.addWidget(self.output_label)
         layout.addWidget(self.copy_output_btn)
+        layout.addWidget(self.save_btn)
 
         layout.addStretch(1)
         self.setLayout(layout)
@@ -111,6 +120,17 @@ class QrCodeWidget(QWidget):
                 Qt.TransformationMode.SmoothTransformation
             )
         )
+
+    def save_qr(self):
+        if self.current_pixmap is not None:
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save QR Code",
+                "",
+                "PNG Files (*.png);;All Files (*)"
+            )
+            if file_path:
+                self.current_pixmap.save(file_path, "PNG")
 
 
 # Plugin data
