@@ -1,58 +1,134 @@
+'''
+## CapyUtilities: MarkdownFormatterWidget
+Description: Minimalist markdown editor and previewer (LIVE PREVIEW updates 300 ms)
+Status: Beta
+'''
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QTextBrowser
+    QWidget,
+    QVBoxLayout,
+    QPushButton,
+    QTextEdit,
+    QTextBrowser,
+    QLabel,
+    QHBoxLayout,
+    QSplitter
 )
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QGuiApplication  # Added for clipboard
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QGuiApplication
 
+import markdown
 class MarkdownFormatterWidget(QWidget):
     def __init__(self, go_home_callback=None):
         super().__init__()
 
-        self.setWindowTitle("CapyUtilities: TEMPLATE")
-
+        self.setWindowTitle("CapyUtilities: Markdown Formatter")
         self.go_home_callback = go_home_callback
 
-        layout = QVBoxLayout()
+        # Create Markdown parser ONCE
+        self.md = markdown.Markdown(
+            extensions=[
+                "fenced_code",
+                "tables",
+                "toc"
+            ]
+        )
 
-        # Add spacing between UI Elements
-        layout.addSpacing(10)
+        layout = QVBoxLayout(self)
 
-        # back button
+        # Back button
         back_button = QPushButton("← Back")
         back_button.setFixedSize(80, 30)
         back_button.clicked.connect(self.go_home)
-        layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
-        self.output_label = QLabel("Feature not available yet.")
-        self.output_label.setWordWrap(True)
-        self.copy_output_btn = QPushButton("Copy")
-        self.copy_output_btn.setFixedWidth(60)
-        self.copy_output_btn.clicked.connect(self.copy_output)
-        output_layout = QHBoxLayout()
+        layout.addWidget(
+            back_button,
+            alignment=Qt.AlignmentFlag.AlignLeft
+        )
 
-        output_layout.addWidget(self.output_label, 1)  # Stretch factor
-        output_layout.addWidget(self.copy_output_btn)
+        # Label
+        layout.addWidget(QLabel("Markdown Input"))
 
-        layout.addLayout(output_layout)
-        
+        # Split view (Input on the left side, And preview on right side.)
+        splitter = QSplitter(Qt.Orientation.Horizontal)
 
-        layout.addStretch(1)
-        self.setLayout(layout)
-    
+        self.input_box = QTextEdit()
+        self.input_box.setPlaceholderText(
+            "# Welcome to Markdown Formatter\n\n"
+            "Type Markdown here..."
+        )
+
+        self.preview = QTextBrowser()
+        self.preview.setOpenExternalLinks(True)
+
+        splitter.addWidget(self.input_box)
+        splitter.addWidget(self.preview)
+        splitter.setSizes([500, 500])
+
+        layout.addWidget(splitter)
+
+        # Buttons
+        button_layout = QHBoxLayout()
+
+        self.copy_btn = QPushButton("Copy Markdown")
+        self.copy_btn.clicked.connect(self.copy_markdown)
+
+        self.clear_btn = QPushButton("Clear")
+        self.clear_btn.clicked.connect(self.clear_all)
+
+        button_layout.addWidget(self.copy_btn)
+        button_layout.addWidget(self.clear_btn)
+        button_layout.addStretch()
+
+        layout.addLayout(button_layout)
+
+        # Debounce timer
+        self.preview_timer = QTimer(self)
+        self.preview_timer.setSingleShot(True)
+        self.preview_timer.timeout.connect(self.render_markdown)
+
+        self.input_box.textChanged.connect(
+            lambda: self.preview_timer.start(300)
+        )
+
+    def render_markdown(self):
+        try:
+            self.md.reset()
+
+            html = self.md.convert(
+                self.input_box.toPlainText()
+            )
+
+            self.preview.setHtml(html)
+
+        except Exception as e:
+            self.preview.setPlainText(
+                f"Markdown Error:\n\n{e}"
+            )
+
+    def copy_markdown(self):
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(
+            self.input_box.toPlainText()
+        )
+
+    def clear_all(self):
+        self.input_box.clear()
+        self.preview.clear()
+
     def go_home(self):
         if self.go_home_callback:
             self.go_home_callback()
-    
-    def copy_output(self):
-        text = self.output_label.text()
-        if text and text != "Formatted text will appear here":
-            clipboard = QGuiApplication.clipboard()
-            clipboard.setText(text)
 
-    
+
 # Plugin data
 PLUGIN = {
     "name": "Markdown Formatter",
-    "keywords": ["markdown", "format", "md"],
+    "keywords": [
+        "markdown",
+        "md",
+        "formatter",
+        "preview",
+        "renderer"
+    ],
     "widget": MarkdownFormatterWidget
 }

@@ -1,20 +1,19 @@
 '''
-## CapyUtilities: [TEMPLATE] Widget
-Description: [Add a description of the widget]
-Status: [Add the status (Stable, Beta, or Alpha)]
+## CapyUtilities: QrCodeWidget
+Description: Minimalist QR Code Generator
+Status: Alpha
 '''
-
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication  # Added for clipboard
 
-class Template(QWidget):
+class QrCodeWidget(QWidget):
     def __init__(self, go_home_callback=None):
         super().__init__()
 
-        self.setWindowTitle("CapyUtilities: TEMPLATE")
+        self.setWindowTitle("CapyUtilities: QrCodeWidget")
 
         self.go_home_callback = go_home_callback
 
@@ -58,7 +57,7 @@ class Template(QWidget):
     
 # Plugin data
 PLUGIN = {
-    "name": "_Template",
-    "keywords": ["template"],
-    "widget": Template
+    "name": "QR Code Generator",
+    "keywords": ["qrcode", "qr code", "qr", "generator"],
+    "widget": QrCodeWidget
 }

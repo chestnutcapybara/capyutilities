@@ -1,3 +1,8 @@
+'''
+## CapyUtilities: Base64 Encoder/Decoder Widget
+Description: Simple widget for encoding and decoding Base64. There are two sections for encoding and decoding.
+Status: Stable
+'''
 import base64
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication  # Added for clipboard access
