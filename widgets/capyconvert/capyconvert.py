@@ -14,7 +14,7 @@ class CapyConvertWidget(QWidget):
     def __init__(self, go_home_callback=None):
         super().__init__()
 
-        self.setWindowTitle("CapyUtilities: TEMPLATE")
+        self.setWindowTitle("CapyUtilities: CapyConvert")
 
         self.go_home_callback = go_home_callback
 
@@ -29,21 +29,12 @@ class CapyConvertWidget(QWidget):
         back_button.clicked.connect(self.go_home)
         layout.addWidget(back_button, alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
 
-        self.output_label = QLabel("This is a template")
+        self.output_label = QLabel("Welcome to CapyConvert")
+        self.output_label.setStyleSheet("font-weight: bold; font-size: 16px;")
         self.output_label.setWordWrap(True)
-        self.copy_output_btn = QPushButton("Copy")
-        self.copy_output_btn.setFixedWidth(60)
-        self.copy_output_btn.clicked.connect(self.copy_output)
-        output_layout = QHBoxLayout()
-
-        output_layout.addWidget(self.output_label, 1)  # Stretch factor
-        output_layout.addWidget(self.copy_output_btn)
-
-        layout.addLayout(output_layout)
-        
-
-        layout.addStretch(1)
+        layout.addWidget(self.output_label)
         self.setLayout(layout)
+        layout.addStretch(1)  # Pushes everything to the top
     
     def go_home(self):
         if self.go_home_callback:
